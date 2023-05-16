@@ -9,14 +9,6 @@ pipeline {
 
   stages {
 
-    
-        stage('Install Docker') {
-            steps {
-                sh 'apt-get update'
-                sh 'apt-get install docker-ce docker-ce-cli containerd.io'
-            }
-        }
-
     stage('Checkout Source') {
       steps {
         git 'https://github.com/hhakanbayraktar/noob-game.API.git'
