@@ -7,14 +7,14 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["noob-game.API.csproj", "noob-game.API/"]
+COPY ["noob-game.API/noob-game.API.csproj", "noob-game.API/"]
 RUN dotnet restore "noob-game.API/noob-game.API.csproj"
 WORKDIR "/src/noob-game.API"
 COPY . .
-RUN dotnet build "noob-game.API.csproj" -c Release -o /app/build
+RUN dotnet build "noob-game.API/noob-game.API.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "noob-game.API.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "noob-game.API/noob-game.API.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
