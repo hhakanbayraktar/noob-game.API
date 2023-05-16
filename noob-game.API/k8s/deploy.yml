@@ -1,0 +1,92 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: igdb-secret
+type: Opaque
+data:
+  id: M2ZqZmp6MDRwZ2Jrd2hxZ250YXN3OHdrbXNvdDlx
+  secret: ZHk0anU1YnU0NWt1dWJueHhicngxa2diamswaG13
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: jwt-secret
+type: Opaque
+data:
+  issuer: bm9vYi1nYW1l
+  audience: bm9vYi1nYW1l
+  key: bm9vYi1nYW1lLWp3dC1yZWFjdC1uZXQtcHJvamVjdA==
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: noob-game-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: noob-game-api
+  template:
+    metadata:
+      labels:
+        app: noob-game-api
+    spec:
+      containers:
+        - name: noob-game-api
+          image: hhakanbayraktar/noob-game.api:1.0.1
+          ports:
+            - containerPort: 80
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: username
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: password
+            - name: DB__Connection
+              value: mongodb://$(MONGO_INITDB_ROOT_USERNAME):$(MONGO_INITDB_ROOT_PASSWORD)@mongodb
+            - name: DB__DBName
+              value: noob-game-db
+
+            - name: IGDB_secret_id
+              valueFrom:
+                secretKeyRef:
+                  name: igdb-secret
+                  key: id
+            - name: IGDB_secret_secret
+              valueFrom:
+                secretKeyRef:
+                  name: igdb-secret
+                  key: secret
+            - name: IGDB__ClientId
+              value: $(IGDB_secret_id)
+            - name: IGDB__ClientSecret
+              value: $(IGDB_secret_secret)
+
+            - name: JWT_secret_issuer
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: issuer
+            - name: JWT_secret_audience
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: audience
+            - name: JWT_secret_key
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: key
+            - name: Jwt__Issuer
+              value: $(JWT_secret_issuer)
+            - name: Jwt__Audience
+              value: $(JWT_secret_audience)
+            - name: Jwt__Key
+              value: $(JWT_secret_key)
