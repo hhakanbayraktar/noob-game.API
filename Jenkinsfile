@@ -39,7 +39,7 @@ pipeline {
     stage('Deploying .NET API container to Kubernetes') {
       steps {
         script {
-          kubernetesDeploy(configs: "deploy.yml", "service.yml")
+          kubernetesDeploy(configs: "k8s/deploy.yml", "k8s/service.yml")
         }
       }
     }
