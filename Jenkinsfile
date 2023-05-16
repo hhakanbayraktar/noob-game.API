@@ -9,6 +9,11 @@ pipeline {
 
   stages {
 
+    stage('Initialize'){
+        def dockerHome = tool 'Docker'
+        env.PATH = "${dockerHome}/bin:${env.PATH}"
+    }
+
     stage('Checkout Source') {
       steps {
         git 'https://github.com/hhakanbayraktar/noob-game.API.git'
@@ -21,11 +26,6 @@ pipeline {
           dockerImage = docker.build dockerimagename
         }
       }
-    }
-
-    stage('Initialize'){
-        def dockerHome = tool 'Docker'
-        env.PATH = "${dockerHome}/bin:${env.PATH}"
     }
 
     stage('Pushing Image') {
