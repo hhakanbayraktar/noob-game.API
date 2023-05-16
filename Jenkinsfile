@@ -9,14 +9,13 @@ pipeline {
 
   stages {
 
-    stage('Initialize'){
-      steps {
-        script{
-          def dockerHome = tool 'Docker'
-          env.PATH = "${dockerHome}/bin:${env.PATH}"
+    
+        stage('Install Docker') {
+            steps {
+                sh 'sudo apt-get update'
+                sh 'sudo apt-get install docker-ce docker-ce-cli containerd.io'
+            }
         }
-      }
-    }
 
     stage('Checkout Source') {
       steps {
