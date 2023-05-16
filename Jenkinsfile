@@ -23,6 +23,11 @@ pipeline {
       }
     }
 
+    stage('Initialize'){
+        def dockerHome = tool 'Docker'
+        env.PATH = "${dockerHome}/bin:${env.PATH}"
+    }
+
     stage('Pushing Image') {
       environment {
                registryCredential = 'dockerhub-credentials'
