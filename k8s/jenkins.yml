@@ -25,12 +25,18 @@ spec:
               mountPath: /var/jenkins_home
             - name: docker-volume
               mountPath: /var/run/docker.sock
+            - name: docker-volume
+              mountPath: /usr/bin/docker
+          command: ["sh", "-c", "apk add --no-cache docker"]
       volumes:
         - name: jenkins-data
           persistentVolumeClaim:
             claimName: jenkins-pvc
         - name: docker-volume
           emptyDir: {}
+        - name: docker-binary
+          hostPath:
+            path: /usr/bin/docker
 
 ---
 apiVersion: v1
